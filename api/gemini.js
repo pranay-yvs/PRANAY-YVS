@@ -6,11 +6,11 @@ export default async function handler(req, res) {
   }
 
   const { prompt, model = "gemini-3-flash-preview", config = {} } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || process.env.GEMINI_KEY;
 
   if (!apiKey) {
     return res.status(500).json({ 
-      error: 'GEMINI_API_KEY is missing on the server. Please add it to the "Secrets" panel in AI Studio Settings (or Environment Variables in Vercel) and refresh.' 
+      error: 'Gemini API Key is missing on the server. Please add GEMINI_API_KEY (or GEMINI_KEY) to the "Secrets" panel in AI Studio Settings and REFRESH the preview.' 
     });
   }
 
