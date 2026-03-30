@@ -1,17 +1,32 @@
 import { GoogleGenAI } from "@google/genai";
 
 /**
- * Initializes the Gemini AI SDK with the API key from the environment.
- * Throws a helpful error if the key is missing.
+ * Proxy for the Gemini AI SDK that calls the server-side API.
+ * This prevents the API key from being exposed in the browser.
  */
 export function getGeminiAI() {
-  const apiKey = process.env.GEMINI_API_KEY;
-  
-  if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY" || apiKey === "undefined") {
-    throw new Error(
-      "Gemini API Key is missing. Please set GEMINI_API_KEY in the Secrets panel in the AI Studio Settings menu."
-    );
-  }
-  
-  return new GoogleGenAI({ apiKey });
+  return {
+    models: {
+      generateContent: async ({ model, contents, config }) => {
+        const response = await fetch('/api/gemini', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model,
+            prompt: contents,
+            config
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to generate content');
+        }
+
+        return await response.json();
+      }
+    }
+  };
 }
