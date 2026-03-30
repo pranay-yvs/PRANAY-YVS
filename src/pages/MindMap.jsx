@@ -9,7 +9,8 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Network, Loader2, Sparkles, RefreshCw, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { getGeminiAI } from '../lib/gemini';
+import { Type } from "@google/genai";
 import { db } from '../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
@@ -47,7 +48,7 @@ export default function MindMap({ materialId }) {
 
       const { extractedText } = materialSnap.data();
 
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getGeminiAI();
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Generate a mind map structure (nodes and edges) based on this text: ${extractedText.substring(0, 8000)}. 

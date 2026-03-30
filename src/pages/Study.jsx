@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { getGeminiAI } from '../lib/gemini';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -40,7 +40,7 @@ export default function Study({ topics, materialId }) {
       const context = chunks ? chunks.slice(0, 5).join("\n") : "";
 
       // Call Gemini in the frontend
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getGeminiAI();
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Context: ${context}\n\nQuestion: ${userMsg}\n\nAnswer the question based on the context provided.`,

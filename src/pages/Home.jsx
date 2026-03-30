@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { FileUp, CheckCircle2, Loader2, Info, LayoutDashboard, MessageSquare, GraduationCap } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { getGeminiAI } from '../lib/gemini';
 import { useAuth } from '../App';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -89,7 +89,7 @@ export default function Home({ onUploadSuccess }) {
       const { fullText, pageCount, chunks } = await extractTextFromPdf(file);
       
       // Extract topics using Gemini in the frontend
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getGeminiAI();
       const aiResponse = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Extract 3-5 main educational topics from this text. Return as a JSON array of strings: ${fullText.substring(0, 10000)}`,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GraduationCap, Loader2, CheckCircle2, XCircle, ArrowRight, RotateCcw } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { getGeminiAI } from '../lib/gemini';
 import { useAuth } from '../App';
 import { db } from '../firebase';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
@@ -69,7 +69,7 @@ export default function Quiz({ topics, materialId }) {
       const { extractedText } = materialSnap.data();
 
       // Call Gemini in the frontend
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = getGeminiAI();
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Generate a 5-question MCQ quiz about "${topic}" based on this text: ${extractedText.substring(0, 8000)}. 
