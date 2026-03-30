@@ -12,6 +12,8 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
+  console.log("Environment Check: GEMINI_API_KEY is", process.env.GEMINI_API_KEY ? "SET" : "MISSING");
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
